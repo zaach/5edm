@@ -1,0 +1,13 @@
+{
+  "name": "5EDM",
+  "short_name": "5EDM",
+  "start_url": "https://znc.ngrok.io",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

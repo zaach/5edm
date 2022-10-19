@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "start": "npx tailwindcss -i input.css -o ./static/styles.css --watch & deno run --unstable -A --watch=static/,routes/,lib/ --allow-env=ELIZA_URL dev.ts"
+  },
+  "importMap": "./import_map.json",
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  }
+}
