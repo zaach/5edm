@@ -1,5 +1,5 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
-import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
+import { config } from "https://deno.land/std@0.160.0/dotenv/mod.ts";
 
 config({ export: true });
 export function EnvScript({ keys }: { keys: string[] }) {
