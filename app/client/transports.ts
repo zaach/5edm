@@ -72,3 +72,29 @@ export class FetchSenderTransport implements SenderTransport {
     throw new Error("could not send");
   }
 }
+
+// deno-lint-ignore no-explicit-any
+type Constructor<T> = { new (...args: any[]): T };
+
+export interface TransportCreator {
+  createSenderTransport: () => SenderTransport;
+  createReceiverTransport: () => ReceiverTransport;
+}
+export class HttpTransportCreator implements TransportCreator {
+  constructor(
+    private options = {
+      baseSendApiUrl: "/api/send?channelId=",
+      baseRecieveApiUrl: "/api/sse?channelId=",
+    },
+    private SenderClass: Constructor<SenderTransport> = FetchSenderTransport,
+    private ReceiverClass: Constructor<ReceiverTransport> = SseTransport,
+  ) {
+  }
+
+  createSenderTransport() {
+    return new this.SenderClass(this.options.baseSendApiUrl);
+  }
+  createReceiverTransport() {
+    return new this.ReceiverClass(this.options.baseRecieveApiUrl);
+  }
+}

@@ -8,10 +8,12 @@ import {
 import { decodeUrlParam, encodeUrlParam } from "./param-encoding.ts";
 import {
   FetchSenderTransport,
+  HttpTransportCreator,
   ReceiverTransport,
   SenderTransport,
   SendResponse,
   SseTransport,
+  TransportCreator,
 } from "./transports.ts";
 
 export enum SessionEventType {
@@ -255,11 +257,25 @@ export class EncryptedSessionCreator<
 > implements SessionCreator<MessageValueType, BaseSessionType> {
   #inviteContext: Map<string, InitiatorCryptoContext> = new Map();
 
+  constructor(
+    protected readonly transportCreator: TransportCreator =
+      new HttpTransportCreator(),
+  ) {
+  }
+
   protected createInitiatorSession(initiator: InitiatorCryptoContext) {
-    return new EncryptedSession<MessageValueType>(initiator);
+    return new EncryptedSession<MessageValueType>(
+      initiator,
+      this.transportCreator.createReceiverTransport(),
+      this.transportCreator.createSenderTransport(),
+    );
   }
   protected createJoinerSession(joiner: JoinerCryptoContext) {
-    return new EncryptedSession<MessageValueType>(joiner);
+    return new EncryptedSession<MessageValueType>(
+      joiner,
+      this.transportCreator.createReceiverTransport(),
+      this.transportCreator.createSenderTransport(),
+    );
   }
 
   public async createInvite() {
@@ -364,9 +380,17 @@ export class EncryptedSessionWithReplayCreator<
     >,
 > extends EncryptedSessionCreator<MessageValueType, BaseSessionType> {
   protected createInitiatorSession(initiator: InitiatorCryptoContext) {
-    return new EncryptedSessionWithReplay<MessageValueType>(initiator);
+    return new EncryptedSessionWithReplay<MessageValueType>(
+      initiator,
+      this.transportCreator.createReceiverTransport(),
+      this.transportCreator.createSenderTransport(),
+    );
   }
   protected createJoinerSession(joiner: JoinerCryptoContext) {
-    return new EncryptedSessionWithReplay<MessageValueType>(joiner);
+    return new EncryptedSessionWithReplay<MessageValueType>(
+      joiner,
+      this.transportCreator.createReceiverTransport(),
+      this.transportCreator.createSenderTransport(),
+    );
   }
 }

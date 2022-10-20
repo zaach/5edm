@@ -16,6 +16,7 @@ import {
   SessionEventValues,
   SessionWithReplay,
 } from "./session.ts";
+import { HttpTransportCreator } from "./transports.ts";
 
 export class ChatContext<
   SessionCreatorType extends SessionCreator<MessageValue> = SessionCreator<
@@ -35,11 +36,20 @@ export class ChatContext<
     private sessionCreator: SessionCreatorType,
   ) {}
 
-  static createEncryptedChatContext() {
+  static createEncryptedChatContext(
+    { baseApiUrl }: { baseApiUrl?: string } = {},
+  ) {
+    let config;
+    if (baseApiUrl) {
+      config = {
+        baseSendApiUrl: `${baseApiUrl}/api/send?channelId=`,
+        baseRecieveApiUrl: `${baseApiUrl}/api/sse?channelId=`,
+      };
+    }
     const eventTarget = new EventTarget();
     const chatContext = new DurableChatContext(
       eventTarget,
-      new EncryptedSessionWithReplayCreator(),
+      new EncryptedSessionWithReplayCreator(new HttpTransportCreator(config)),
     );
     return { eventTarget, chatContext };
   }
