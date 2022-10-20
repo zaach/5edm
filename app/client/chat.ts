@@ -126,8 +126,14 @@ export class ChatContext<
   async disconnect() {
     if (this.session) {
       await this.#send(MessageType.disconnect, {});
+      await this.#disconnect(true);
+    }
+  }
+
+  async #disconnect(local: boolean) {
+    if (this.session) {
       await this.session.disconnect();
-      this.emit(ChatEventType.disconnected, { local: true });
+      this.emit(ChatEventType.disconnected, { local });
       this.session = undefined;
     }
   }
@@ -183,13 +189,13 @@ export class ChatContext<
     this.emit(ChatEventType.message, msg);
 
     if (msg.type === MessageType.disconnect) {
-      await this.session?.disconnect();
-      this.emit(ChatEventType.disconnected, { local: false });
+      await this.#disconnect(false);
     }
     setTimeout(() => this.#checkIfIdle(), 61_000);
   }
 
   #checkIfIdle() {
+    if (!this.session) return;
     // if a message hasn't been received in the last minute, flag as idle
     const aMinuteAgo = Date.now() - 60_000;
     if (!this.#partnerIsIdle && this.#lastSeenTime < aMinuteAgo) {
