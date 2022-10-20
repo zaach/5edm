@@ -1,5 +1,5 @@
 import { ComponentChildren } from "preact";
-import { DisplayMessage } from "/app/types.ts";
+import { DisplayMessage } from "../app/types.ts";
 
 type Expanded = string | { img: string; ltr: boolean };
 

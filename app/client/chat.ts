@@ -6,7 +6,7 @@ import {
   Message,
   MessageType,
   MessageValue,
-} from "/app/client/chat-events.ts";
+} from "./chat-events.ts";
 import {
   ConnectedSession,
   EncryptedSessionWithReplayCreator,
@@ -15,7 +15,7 @@ import {
   SessionEventType,
   SessionEventValues,
   SessionWithReplay,
-} from "/app/client/session.ts";
+} from "./session.ts";
 
 export class ChatContext<
   SessionCreatorType extends SessionCreator<MessageValue> = SessionCreator<

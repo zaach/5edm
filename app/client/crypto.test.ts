@@ -2,7 +2,7 @@ import { assertEquals } from "https://deno.land/std@0.157.0/testing/asserts.ts";
 import {
   InitiatorCryptoContext,
   JoinerCryptoContext,
-} from "/app/client/crypto.ts";
+} from "./crypto.ts";
 
 const te = new TextEncoder();
 const td = new TextDecoder();

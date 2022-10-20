@@ -6,8 +6,8 @@ import {
   ChatEvent,
   ChatEventType,
   MessageType,
-} from "/app/client/mod.ts";
-import { Message } from "/app/types.ts";
+} from "./client/mod.ts";
+import { Message } from "./types.ts";
 
 type AppStateData = ReturnType<typeof createAppState>;
 export const AppState = createContext<AppStateData>(undefined!);

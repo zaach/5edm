@@ -1,21 +1,18 @@
-import {
-  InitiatorCryptoContext,
-  JoinerCryptoContext,
-} from "/app/client/crypto.ts";
+import { InitiatorCryptoContext, JoinerCryptoContext } from "./crypto.ts";
 import {
   Base64EnvelopeEncoding,
   EnvelopeEncoding,
   InternalFormat,
   InternalFormatJson,
-} from "/app/client/encoding.ts";
-import { decodeUrlParam, encodeUrlParam } from "/app/client/param-encoding.ts";
+} from "./encoding.ts";
+import { decodeUrlParam, encodeUrlParam } from "./param-encoding.ts";
 import {
   FetchSenderTransport,
   ReceiverTransport,
   SenderTransport,
   SendResponse,
   SseTransport,
-} from "/app/client/transports.ts";
+} from "./transports.ts";
 
 export enum SessionEventType {
   channel_error = "channel_error",

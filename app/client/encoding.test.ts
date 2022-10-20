@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.157.0/testing/asserts.ts";
-import { Base64EnvelopeEncoding } from "/app/client/encoding.ts";
+import { Base64EnvelopeEncoding } from "./encoding.ts";
 
 const te = new TextEncoder();
 

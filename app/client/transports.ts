@@ -1,4 +1,4 @@
-import { EventIterator } from "/app/client/event-iterator.ts";
+import { EventIterator } from "./event-iterator.ts";
 
 export interface ReceiverTransport {
   listen(url: string): AsyncGenerator<MessageEvent, void, void>;

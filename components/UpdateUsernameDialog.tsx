@@ -1,6 +1,6 @@
 import { useState, useCallback, useContext } from "preact/hooks";
 import { computed } from "@preact/signals";
-import { AppState } from "/app/state.ts";
+import { AppState } from "../app/state.ts";
 
 export function UpdateUsernameDialog(props: {
   user: string;

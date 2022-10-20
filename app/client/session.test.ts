@@ -1,20 +1,17 @@
 import { assertEquals } from "https://deno.land/std@0.157.0/testing/asserts.ts";
 
-import {
-  InitiatorCryptoContext,
-  JoinerCryptoContext,
-} from "/app/client/crypto.ts";
+import { InitiatorCryptoContext, JoinerCryptoContext } from "./crypto.ts";
 import {
   EncryptedSession,
   EncryptedSessionCreator,
   SessionEventType,
-} from "/app/client/session.ts";
+} from "./session.ts";
 import {
   ReceiverTransport,
   SenderTransport,
   SendResponse,
-} from "/app/client/transports.ts";
-import { EventIterator } from "/app/client/event-iterator.ts";
+} from "./transports.ts";
+import { EventIterator } from "./event-iterator.ts";
 
 class TestReceiverTransport implements ReceiverTransport {
   constructor(private et: EventTarget) {}
@@ -110,4 +107,3 @@ Deno.test("sessionCreator", async function () {
     await joinerSession.send({ send: "recv" });
   });
 });
-

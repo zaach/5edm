@@ -1,6 +1,6 @@
 import { Head } from "$fresh/runtime.ts";
 import { ComponentChildren } from "preact";
-import { EnvScript } from "/components/EnvScript.tsx";
+import { EnvScript } from "./EnvScript.tsx";
 
 interface Props {
   children: ComponentChildren;

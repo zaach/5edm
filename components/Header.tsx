@@ -1,7 +1,7 @@
 import { computed } from "@preact/signals";
 import { useCallback, useContext } from "preact/hooks";
-import { ChatContext } from "/app/client/mod.ts";
-import { ConnectionStatus, ChatStatus, AppState } from "/app/state.ts";
+import { ChatContext } from "../app/client/mod.ts";
+import { ConnectionStatus, ChatStatus, AppState } from "../app/state.ts";
 
 export function Header({ chatContext }: { chatContext: ChatContext }) {
   const { partnerUsername, username, connectionStatus, chatReady, chatStatus } =

@@ -1,7 +1,7 @@
 import { qrcode } from "https://raw.githubusercontent.com/denorg/qrcode/master/mod.ts";
 import { useCallback, useContext } from "preact/hooks";
 import { useSignal, effect } from "@preact/signals";
-import { AppState } from "/app/state.ts";
+import { AppState } from "../app/state.ts";
 
 const ELIZA_URL = globalThis.ENV?.ELIZA_URL;
 

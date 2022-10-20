@@ -7,13 +7,13 @@ import {
   ChatStatus,
   createAppState,
   setupMessageListeners,
-} from "/app/state.ts";
+} from "../app/state.ts";
 
-import { Message, DisplayMessage } from "/app/types.ts";
-import { ShareLink } from "/components/ShareLink.tsx";
-import { UpdateUsernameDialog } from "/components/UpdateUsernameDialog.tsx";
-import { Header } from "/components/Header.tsx";
-import { MessageBox } from "/components/Messages.tsx";
+import { Message, DisplayMessage } from "../app/types.ts";
+import { ShareLink } from "../components/ShareLink.tsx";
+import { UpdateUsernameDialog } from "../components/UpdateUsernameDialog.tsx";
+import { Header } from "../components/Header.tsx";
+import { MessageBox } from "../components/Messages.tsx";
 
 export default function ChatWrapper() {
   return (

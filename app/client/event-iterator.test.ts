@@ -1,5 +1,5 @@
 import { assertObjectMatch } from "https://deno.land/std@0.157.0/testing/asserts.ts";
-import { EventIterator } from "/app/client/event-iterator.ts";
+import { EventIterator } from "./event-iterator.ts";
 
 Deno.test("event iterator", async function () {
   const et = new EventTarget();
