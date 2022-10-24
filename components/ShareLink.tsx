@@ -47,7 +47,7 @@ export function ShareLink() {
           <label class="input-group input-group-sm">
             <input
               type="text"
-              placeholder="share link"
+              placeholder="initiating..."
               class="input input-bordered focus:outline-none input-sm w-full"
               value={joinLink.value}
               onClick={(event) => event.currentTarget.select()}

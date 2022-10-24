@@ -19,7 +19,7 @@ This will watch the project directory and restart as necessary.
 
 ### Deploying
 
-The app can be deployed to Deno Deploy.
+The app is deployed to Deno Deploy via [github actions](https://deno.com/deploy/docs/deployctl#deployctl-github-action).
 
 ## Protocol
 TODO
