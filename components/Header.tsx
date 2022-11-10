@@ -54,24 +54,25 @@ export function Header({ chatContext }: { chatContext: ChatContext }) {
           <div class="dropdown justify-self-center max-w-full flex-nowrap">
             <label
               tabIndex={0}
-              class=" btn btn-sm normal-case max-w-full flex-nowrap inline-flex"
+              class="btn btn-sm normal-case max-w-full flex-nowrap inline-flex"
             >
               <svg
-                id="i-lock"
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 32 32"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
                 width="16"
                 height="16"
-                fill="none"
-                stroke="currentcolor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
                 class="mr-1"
               >
-                <path d="M5 15 L5 30 27 30 27 15 Z M9 15 C9 9 9 5 16 5 23 5 23 9 23 15 M16 20 L16 23" />
-                <circle cx="16" cy="24" r="1" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                />
               </svg>
+
               <span class="truncate">{partnerUsername}</span>
             </label>
             <ul
@@ -126,21 +127,20 @@ export function Header({ chatContext }: { chatContext: ChatContext }) {
           class="inline-flex items-center btn btn-sm normal-case max-w-full truncate flex-nowrap"
           for="username-modal"
         >
-          <span class="truncate">{username}</span>
+          <span class="truncate mr-1">{username}</span>
           <svg
-            class="ml-1 w-5 h-5 text-gray-500 origin-center cursor-pointer"
             xmlns="http://www.w3.org/2000/svg"
+            fill="none"
             viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
           >
-            {" "}
-            <g>
-              {" "}
-              <path fill="none" d="M0 0h24v24H0z" />{" "}
-              <path
-                fill="currentColor"
-                d="M5.334 4.545a9.99 9.99 0 0 1 3.542-2.048A3.993 3.993 0 0 0 12 3.999a3.993 3.993 0 0 0 3.124-1.502 9.99 9.99 0 0 1 3.542 2.048 3.993 3.993 0 0 0 .262 3.454 3.993 3.993 0 0 0 2.863 1.955 10.043 10.043 0 0 1 0 4.09c-1.16.178-2.23.86-2.863 1.955a3.993 3.993 0 0 0-.262 3.455 9.99 9.99 0 0 1-3.542 2.047A3.993 3.993 0 0 0 12 20a3.993 3.993 0 0 0-3.124 1.502 9.99 9.99 0 0 1-3.542-2.047 3.993 3.993 0 0 0-.262-3.455 3.993 3.993 0 0 0-2.863-1.954 10.043 10.043 0 0 1 0-4.091 3.993 3.993 0 0 0 2.863-1.955 3.993 3.993 0 0 0 .262-3.454zM13.5 14.597a3 3 0 1 0-3-5.196 3 3 0 0 0 3 5.196z"
-              />{" "}
-            </g>{" "}
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495"
+            />
           </svg>
         </label>
       </div>
