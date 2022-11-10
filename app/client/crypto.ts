@@ -76,7 +76,8 @@ export abstract class Encrypter {
   }
 
   protected async deriveChannelId(pubkey: ArrayBuffer): Promise<ArrayBuffer> {
-    const raw = await this.suite.labeledExtract(
+    const kdf = await this.suite.kdfContext();
+    const raw = await kdf.labeledExtract(
       EMPTY_SALT,
       LABEL_CHANNEL_ID,
       new Uint8Array(pubkey),
@@ -157,9 +158,8 @@ export class InitiatorCryptoContext extends Encrypter {
 
     const keySeed = await recipient.export(EXPORT_LABEL_KEY, 32);
     const nonceSeed = await recipient.export(EXPORT_LABEL_NONCE, 32);
-    const sessionIds = await recipient.export(EXPORT_LABEL_SESSIONID, 32);
-    const sessionId = new Uint8Array(sessionIds, 0, 16); // initiator sessionId is the first 16 past 64
-    const toSessionId = new Uint8Array(sessionIds, 16, 16); // joiner sessionId is the last 16
+    const sessionId = await recipient.export(EXPORT_LABEL_SESSIONID, 16);
+    const toSessionId = await recipient.export(EXPORT_LABEL_SESSIONID, 16);
     await recipient.setupBidirectional(
       keySeed,
       nonceSeed,
@@ -172,7 +172,10 @@ export class InitiatorCryptoContext extends Encrypter {
     // decrypt
     let plaintext = new ArrayBuffer(0);
     try {
-      plaintext = await this.open(senderInitCiphertext, sessionId);
+      plaintext = await this.context.open(
+        senderInitCiphertext,
+        this.handshakeChannelId,
+      );
     } catch (err) {
       console.log("failed to decrypt.", err);
       throw err;
@@ -216,11 +219,10 @@ export class JoinerCryptoContext extends Encrypter {
       senderKey: skp,
     });
 
+    const toSessionId = await sender.export(EXPORT_LABEL_SESSIONID, 16);
+    const sessionId = await sender.export(EXPORT_LABEL_SESSIONID, 16);
     const keySeed = await sender.export(EXPORT_LABEL_KEY, 32);
     const nonceSeed = await sender.export(EXPORT_LABEL_NONCE, 32);
-    const sessionIds = await sender.export(EXPORT_LABEL_SESSIONID, 32);
-    const toSessionId = new Uint8Array(sessionIds, 0, 16); // initiator sessionId is the first 16
-    const sessionId = new Uint8Array(sessionIds, 16, 16); // joiner sessionId is the last 16
 
     // setup bidirectional encryption
     await sender.setupBidirectional(
@@ -233,8 +235,9 @@ export class JoinerCryptoContext extends Encrypter {
     this.sessionId = sessionId;
     this.toSessionId = toSessionId;
     this.context = sender;
-    const senderInitCiphertext = await this.seal(
+    const senderInitCiphertext = await this.context.seal(
       appPayload,
+      toChannelId,
     );
 
     // Create encrypted header containing sender public key
@@ -245,7 +248,7 @@ export class JoinerCryptoContext extends Encrypter {
           recipientPublicKey: recPubKey,
         },
         serializedPublicKey, // plaintext
-        senderInitCiphertext.payload, // use main payload as additional data to bind header to payload
+        senderInitCiphertext, // use main payload as additional data to bind header to payload
       );
 
     //this.#initiatorPublicKey = recPubKey;
@@ -258,7 +261,7 @@ export class JoinerCryptoContext extends Encrypter {
       envelope: {
         payload: [
           sender.enc,
-          senderInitCiphertext.payload,
+          senderInitCiphertext,
         ],
         header: [
           senderPkContext,
