@@ -6,7 +6,12 @@ const EMPTY_SALT = new Uint8Array(0);
 const LABEL_CHANNEL_ID = new TextEncoder().encode("channel_id");
 const EXPORT_LABEL_NONCE = new TextEncoder().encode("5edm nonce");
 const EXPORT_LABEL_KEY = new TextEncoder().encode("5edm key");
-const EXPORT_LABEL_SESSIONID = new TextEncoder().encode("5edm session id");
+const EXPORT_LABEL_SESSIONID_RECIPIENT = new TextEncoder().encode(
+  "5edm recipient session id",
+);
+const EXPORT_LABEL_SESSIONID_SENDER = new TextEncoder().encode(
+  "5edm sender session id",
+);
 
 export interface Envelope {
   // header: channelid
@@ -158,8 +163,14 @@ export class InitiatorCryptoContext extends Encrypter {
 
     const keySeed = await recipient.export(EXPORT_LABEL_KEY, 32);
     const nonceSeed = await recipient.export(EXPORT_LABEL_NONCE, 32);
-    const sessionId = await recipient.export(EXPORT_LABEL_SESSIONID, 16);
-    const toSessionId = await recipient.export(EXPORT_LABEL_SESSIONID, 16);
+    const sessionId = await recipient.export(
+      EXPORT_LABEL_SESSIONID_RECIPIENT,
+      16,
+    );
+    const toSessionId = await recipient.export(
+      EXPORT_LABEL_SESSIONID_SENDER,
+      16,
+    );
     await recipient.setupBidirectional(
       keySeed,
       nonceSeed,
@@ -219,10 +230,13 @@ export class JoinerCryptoContext extends Encrypter {
       senderKey: skp,
     });
 
-    const toSessionId = await sender.export(EXPORT_LABEL_SESSIONID, 16);
-    const sessionId = await sender.export(EXPORT_LABEL_SESSIONID, 16);
     const keySeed = await sender.export(EXPORT_LABEL_KEY, 32);
     const nonceSeed = await sender.export(EXPORT_LABEL_NONCE, 32);
+    const toSessionId = await sender.export(
+      EXPORT_LABEL_SESSIONID_RECIPIENT,
+      16,
+    );
+    const sessionId = await sender.export(EXPORT_LABEL_SESSIONID_SENDER, 16);
 
     // setup bidirectional encryption
     await sender.setupBidirectional(

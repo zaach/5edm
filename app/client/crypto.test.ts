@@ -1,8 +1,8 @@
-import { assertEquals } from "https://deno.land/std@0.157.0/testing/asserts.ts";
 import {
-  InitiatorCryptoContext,
-  JoinerCryptoContext,
-} from "./crypto.ts";
+  assertEquals,
+  assertNotEquals,
+} from "https://deno.land/std@0.157.0/testing/asserts.ts";
+import { InitiatorCryptoContext, JoinerCryptoContext } from "./crypto.ts";
 
 const te = new TextEncoder();
 const td = new TextDecoder();
@@ -30,6 +30,19 @@ Deno.test("encrypt/decrypt", async function () {
   );
   assertEquals(result2, responseData.buffer);
   console.log("plaintext from initiator", td.decode(result2));
+
+  assertEquals(
+    new Uint8Array(joiner.sessionId!),
+    new Uint8Array(initiator.toSessionId!),
+  );
+  assertEquals(
+    new Uint8Array(initiator.sessionId!),
+    new Uint8Array(joiner.toSessionId!),
+  );
+  assertNotEquals(
+    new Uint8Array(initiator.sessionId!),
+    new Uint8Array(initiator.toSessionId!),
+  );
 
   {
     const raw = "try";
