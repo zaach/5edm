@@ -6,7 +6,7 @@ Ephemeral, Edge, End-to-End Encrypted Direct Messaging
 encrypted and deniable messaging session between two parties. New keys are
 generated before each session, providing anonymity and forward-secrecy across sessions. With no persistent storage of keys or messages the app's only dependency is <a href="https://deno.com/deploy">Deno Deploy</a>, an edge computing platform with a [cross-region message bus](https://deno.com/deploy/docs/runtime-broadcast-channel).
 
-*Note: This is a proof-of-concept. Use [Signal](https://signal.org/) if you need the real deal.*
+_Note: This is a proof-of-concept. Use [Signal](https://signal.org/) if you need the real deal._
 
 ### Running Locally
 
@@ -46,6 +46,7 @@ contextR = SetupAuthR(enc, skR, info, pkS)
 channelId = LabeledExtract(0, "channel_id", pkR)[0:16]
 greeting = contextR.Open(channelId, ciphertext)
 ```
+
 The Recipient uses the single-shot API to open `ciphertext2` and obtain the Sender's public key `pkS`. They can then setup their own encryption context and open the greeting ciphertext.
 
 ### Bidirectional Encryption
@@ -66,13 +67,14 @@ ciphertext = contextR.Seal(sessionIdS, plaintext)
 ```
 key = contextS.Export("5edm key", 32)
 nonce = contextS.Export("5edm nonce", 32)
-sessionIdR = contextS.Export("5edm session id", 16)
-sessionIdS = contextS.Export("5edm session id", 16)
+sessionIdR = contextS.Export("5edm recipient session id", 16)
+sessionIdS = contextS.Export("5edm sender session id", 16)
 
 contextS.SetupBidirectional(key, nonce)
 ciphertext = contextS.Open(sessionIdS, ciphertext)
 
 ```
+
 The Sender context can now `open` and the Recipient context can now `seal`. Session IDs are passed along with the encrypted messages to route them, so they are supplied as additional data when opening/sealing.
 
 The pseudocode below defines `Context<ROLE>.SetupBidirectional`. It aligns with the [hpke-js implementation](https://github.com/dajiaji/hpke-js#base-mode-with-bidirectional-encryption).
@@ -109,6 +111,6 @@ def Context<ROLE>.IncrementSeq_r():
 ```
 
 ### Caveats
-* HPKE [isn't resiliant against dropped or out-of-order messages](https://www.rfc-editor.org/rfc/rfc9180.html#name-message-order-and-message-l) so sessions can easily become out of sync on a shaky connection. A backend queue would help (or an [alternative protocol)](https://datatracker.ietf.org/doc/draft-harkins-cfrg-dnhpke/) but I opted to keep things simple and rely on bare bones Deno Deploy. Instead, clients attempt to recover when they suspect they're out of sync. However, if both directions are out of sync it's game over for that session.
-* I'm not a cryptographer but I did stay at a holiday inn express last night
 
+- HPKE [isn't resiliant against dropped or out-of-order messages](https://www.rfc-editor.org/rfc/rfc9180.html#name-message-order-and-message-l) so sessions can easily become out of sync on a shaky connection. A backend queue would help (or an [alternative protocol)](https://datatracker.ietf.org/doc/draft-harkins-cfrg-dnhpke/) but I opted to keep things simple and rely on bare bones Deno Deploy. Instead, clients attempt to recover when they suspect they're out of sync. However, if both directions are out of sync it's game over for that session.
+- I'm not a cryptographer but I did stay at a holiday inn express last night
