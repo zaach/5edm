@@ -1,13 +1,13 @@
 {
   "name": "5EDM",
   "short_name": "5EDM",
-  "start_url": "https://znc.ngrok.io",
+  "start_url": "https://5edm.deno.dev",
   "display": "standalone",
   "icons": [
     {
-      "src": "logo.svg",
+      "src": "5edm.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png"
     }
   ]
 }

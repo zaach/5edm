@@ -1,5 +1,5 @@
 import { qrcode } from "https://raw.githubusercontent.com/denorg/qrcode/master/mod.ts";
-import { useCallback, useContext } from "preact/hooks";
+import { useCallback, useContext, useEffect } from "preact/hooks";
 import { useSignal, effect } from "@preact/signals";
 import { AppState } from "../app/state.ts";
 
@@ -35,6 +35,10 @@ export function ShareLink() {
       body: JSON.stringify({ invite: joinLink.value }),
     });
   }, [joinLink.value]);
+  // prefetch to warm up the server
+  useEffect(() => {
+    fetch(ELIZA_URL, { method: "get", mode: "no-cors" });
+  }, []);
 
   const hasEliza = !!ELIZA_URL;
 
@@ -129,7 +133,7 @@ export function ShareLink() {
       <p class="self-center rounded-lg overflow-hidden mt-10 text-xs h-8">
         {hasEliza && (
           <>
-            Or chat with
+            Or chat with{" "}
             <a onClick={onEliza} class="btn btn-xs" href="#">
               ELIZA🤖
             </a>
