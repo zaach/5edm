@@ -2841,6 +2841,10 @@ body[dir="rtl"] .checkbox:checked,
     height: 2.5rem;
   }
 
+  .md\:h-9 {
+    height: 2.25rem;
+  }
+
   .md\:w-40 {
     width: 10rem;
   }

@@ -14,6 +14,7 @@ const Layout = ({ children }: Props) => {
       <Head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" type="image/png" href="/favicon.png"/>
         {/* Tailwind Stylesheet */}
         <link rel="stylesheet" href="/styles.css" />
         <EnvScript keys={ENV_KEYS} />

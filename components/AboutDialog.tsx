@@ -7,7 +7,7 @@ export function AboutDialog() {
       <label for="about-modal" class="modal cursor-pointer">
         <label class="modal-box relative" for="">
           <div class="relative h-8 flex place-content-center">
-            <img src="/5edm.png" class="md:w-40 md:h-10" />
+            <img src="/5edm.png" class="md:w-27 md:h-9" />
           </div>
           <p class="my-4 text-center text-xs light:fg-gray-500">
             <b>E</b>phemeral, <b>E</b>dge, <b>E</b>nd-to-

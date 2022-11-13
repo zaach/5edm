@@ -34,7 +34,6 @@ export function UpdateUsernameDialog(props: {
             <input
               title="Username"
               autocomplete="off"
-              placeholder="alice"
               type="text"
               class="input placeholder:text-gray-600 focus:placeholder:text-gray-500 w-full input-bordered focus:outline-none focus:ring focus:border-gray-500"
               value={local}
