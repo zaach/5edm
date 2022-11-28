@@ -1,4 +1,6 @@
-import * as hpke from "https://raw.githubusercontent.com/zaach/hpke-js/main/mod.ts";
+import * as hpke from "https://deno.land/x/hpke@v0.15.0/mod.ts";
+import ed25519 from "https://cdn.skypack.dev/@stablelib/ed25519?dts";
+import * as uint8arrays from "https://cdn.skypack.dev/uint8arrays?dts";
 
 const { Kem, Kdf, Aead, CipherSuite } = hpke;
 
@@ -27,10 +29,7 @@ export interface HandshakeEnvelope {
 }
 
 const concatBuffers = function (buffer1: ArrayBuffer, buffer2: ArrayBuffer) {
-  const tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
-  tmp.set(new Uint8Array(buffer1), 0);
-  tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
-  return tmp.buffer;
+  return uint8arrays.concat([new Uint8Array(buffer1), new Uint8Array(buffer2)]);
 };
 
 export abstract class Encrypter {
@@ -95,19 +94,18 @@ export abstract class Encrypter {
 }
 
 export class InitiatorCryptoContext extends Encrypter {
-  #keypair?: CryptoKeyPair;
+  #sk?: CryptoKey;
   handshakeChannelId?: ArrayBuffer;
-  //#joinerPublicKey?: CryptoKey;
 
   // Create a stable keypair for this instance
   async init(): Promise<
     { serializedPublicKey: ArrayBuffer; handshakeChannelId: ArrayBuffer }
   > {
-    this.#keypair = await this.suite.generateKeyPair();
+    const edkp = ed25519.generateKeyPair();
+    const x25519sk = ed25519.convertSecretKeyToX25519(edkp.secretKey);
+    this.#sk = await this.suite.importKey("raw", x25519sk, false);
     // serialize publicKey for sharing
-    const serializedPublicKey = await this.suite.serializePublicKey(
-      this.#keypair,
-    );
+    const serializedPublicKey = edkp.publicKey;
     const handshakeChannelId = await this.deriveChannelId(serializedPublicKey);
     this.handshakeChannelId = handshakeChannelId;
     return { serializedPublicKey, handshakeChannelId };
@@ -122,7 +120,7 @@ export class InitiatorCryptoContext extends Encrypter {
       toSessionId: ArrayBuffer;
     }
   > {
-    if (!this.#keypair) {
+    if (!this.#sk) {
       throw new Error("CryptoContext not initialized");
     }
 
@@ -139,7 +137,7 @@ export class InitiatorCryptoContext extends Encrypter {
     try {
       senPubKeyRaw = await this.suite.open(
         {
-          recipientKey: this.#keypair,
+          recipientKey: this.#sk,
           enc: senderPkContext,
         },
         senderPkCiphertext,
@@ -153,10 +151,13 @@ export class InitiatorCryptoContext extends Encrypter {
       throw new Error("Could not decrypt handshake payload");
     }
 
-    const senderPublicKey = await this.suite.deserializePublicKey(senPubKeyRaw);
+    const senderPublicKey = await this.suite.importKey(
+      "raw",
+      ed25519.convertPublicKeyToX25519(new Uint8Array(senPubKeyRaw)),
+    );
 
     const recipient = await this.suite.createRecipientContext({
-      recipientKey: this.#keypair,
+      recipientKey: this.#sk,
       enc: senderInitContext,
       senderPublicKey: senderPublicKey,
     });
@@ -192,8 +193,6 @@ export class InitiatorCryptoContext extends Encrypter {
       throw err;
     }
 
-    //this.#joinerPublicKey = senderPublicKey;
-
     return {
       plaintext,
       sessionId,
@@ -204,8 +203,6 @@ export class InitiatorCryptoContext extends Encrypter {
 
 export class JoinerCryptoContext extends Encrypter {
   toChannelId?: ArrayBuffer;
-  //#keypair?: CryptoKeyPair;
-  //#initiatorPublicKey?: CryptoKey;
 
   async initSender(
     receiverPublicKeyRaw: ArrayBuffer,
@@ -218,16 +215,19 @@ export class JoinerCryptoContext extends Encrypter {
       toSessionId: ArrayBuffer;
     }
   > {
-    const skp = await this.suite.generateKeyPair();
+    const edkp = ed25519.generateKeyPair();
+    const x25519sk = ed25519.convertSecretKeyToX25519(edkp.secretKey);
+    const sk = await this.suite.importKey("raw", x25519sk, false);
     // import receiver public key received from outside channel
-    const recPubKey = await this.suite.deserializePublicKey(
-      receiverPublicKeyRaw,
+    const recPubKey = await this.suite.importKey(
+      "raw",
+      ed25519.convertPublicKeyToX25519(new Uint8Array(receiverPublicKeyRaw)),
     );
 
     // setup sender context
     const sender = await this.suite.createSenderContext({
       recipientPublicKey: recPubKey,
-      senderKey: skp,
+      senderKey: sk,
     });
 
     const keySeed = await sender.export(EXPORT_LABEL_KEY, 32);
@@ -255,7 +255,7 @@ export class JoinerCryptoContext extends Encrypter {
     );
 
     // Create encrypted header containing sender public key
-    const serializedPublicKey = await this.suite.serializePublicKey(skp);
+    const serializedPublicKey = edkp.publicKey;
     const { ct: senderPkCiphertext, enc: senderPkContext } = await this.suite
       .seal(
         {
@@ -264,9 +264,6 @@ export class JoinerCryptoContext extends Encrypter {
         serializedPublicKey, // plaintext
         senderInitCiphertext, // use main payload as additional data to bind header to payload
       );
-
-    //this.#initiatorPublicKey = recPubKey;
-    //this.#keypair = skp;
 
     return {
       toChannelId,

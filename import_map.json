@@ -9,6 +9,7 @@
     "tailwindcss": "https://esm.sh/tailwindcss@3.1.8",
     "tailwindcss/": "https://esm.sh/tailwindcss@3.1.8/",
     "daisyui": "https://esm.sh/daisyui@2.31.0",
-    "daisyui/": "https://esm.sh/daisyui@2.31.0/"
+    "daisyui/": "https://esm.sh/daisyui@2.31.0/",
+    "crypto": "./noop.ts"
   }
 }

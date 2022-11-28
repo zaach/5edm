@@ -5,7 +5,7 @@ import {
   InternalFormat,
   InternalFormatJson,
 } from "./encoding.ts";
-import { decodeUrlParam, encodeUrlParam } from "./param-encoding.ts";
+import { encodeUrlParam } from "./param-encoding.ts";
 import {
   FetchSenderTransport,
   HttpTransportCreator,
@@ -15,6 +15,8 @@ import {
   SseTransport,
   TransportCreator,
 } from "./transports.ts";
+
+import { DecentralizedIdentity, Identity } from "./identity.ts";
 
 export enum SessionEventType {
   channel_error = "channel_error",
@@ -131,12 +133,11 @@ export class EncryptedSession<MessageValueType extends ObjectValue>
     }
   }
 
-  async join(encodedPk: string, initialMessage: MessageValueType) {
+  async join(pk: Uint8Array, initialMessage: MessageValueType) {
     if (!(this.cryptoContext instanceof JoinerCryptoContext)) {
       throw new Error("Must be the joining party to join");
     }
 
-    const pk = decodeUrlParam(encodedPk);
     const plaintext = this.format.encode(initialMessage);
     const { envelope, toChannelId, sessionId, toSessionId } = await this
       .cryptoContext
@@ -260,6 +261,7 @@ export class EncryptedSessionCreator<
   constructor(
     protected readonly transportCreator: TransportCreator =
       new HttpTransportCreator(),
+    protected readonly identity: Identity = new DecentralizedIdentity(),
   ) {
   }
 
@@ -281,7 +283,7 @@ export class EncryptedSessionCreator<
   public async createInvite() {
     const initiator = new InitiatorCryptoContext();
     const { serializedPublicKey: ipk } = await initiator.init();
-    const encodedPk = encodeUrlParam(ipk);
+    const encodedPk = this.identity.encode(new Uint8Array(ipk));
     this.#inviteContext.set(encodedPk, initiator);
     return encodedPk;
   }
@@ -322,7 +324,8 @@ export class EncryptedSessionCreator<
   ): Promise<ConnectedSession<MessageValueType, BaseSessionType>> {
     const joiner = new JoinerCryptoContext();
     const joinerSession = this.createJoinerSession(joiner);
-    await joinerSession.join(invite, joinMessage);
+    const pk = this.identity.decode(invite);
+    await joinerSession.join(pk, joinMessage);
     return this.#asConnectedSession(joinerSession);
   }
 

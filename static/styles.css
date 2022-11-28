@@ -2837,16 +2837,8 @@ body[dir="rtl"] .checkbox:checked,
 }
 
 @media (min-width: 768px) {
-  .md\:h-10 {
-    height: 2.5rem;
-  }
-
   .md\:h-9 {
     height: 2.25rem;
-  }
-
-  .md\:w-40 {
-    width: 10rem;
   }
 }
 
