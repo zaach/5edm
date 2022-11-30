@@ -1,4 +1,4 @@
-import * as uint8arrays from "https://cdn.skypack.dev/uint8arrays?dts";
+import * as uint8arrays from "https://cdn.skypack.dev/uint8arrays";
 import { BASE58_DID_PREFIX } from "./prefixes.ts";
 
 export * from "./prefixes.ts";

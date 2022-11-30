@@ -1,6 +1,6 @@
 import * as hpke from "https://deno.land/x/hpke@v0.15.0/mod.ts";
-import ed25519 from "https://cdn.skypack.dev/@stablelib/ed25519?dts";
-import * as uint8arrays from "https://cdn.skypack.dev/uint8arrays?dts";
+import ed25519 from "https://cdn.skypack.dev/@stablelib/ed25519";
+import * as uint8arrays from "https://cdn.skypack.dev/uint8arrays";
 
 const { Kem, Kdf, Aead, CipherSuite } = hpke;
 
